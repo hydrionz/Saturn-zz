@@ -66,7 +66,7 @@ For the document of 2.x, please come [here](https://vipshop.github.io/Saturn/#/z
 
 ## Cases 使用案例
 
-![orgs](https://vipshop.github.io/Saturn/zh-cn/3.x/_media/orgs.jpg)
+![orgs](https://vipshop.github.io/Saturn/zh-cn/3.x/_media/orgs2.jpg)
 
 [Organizations using Saturn](https://github.com/vipshop/Saturn/wiki/Organizations-using-Saturn)
 
