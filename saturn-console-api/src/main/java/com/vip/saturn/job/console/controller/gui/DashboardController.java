@@ -274,58 +274,92 @@ public class DashboardController extends AbstractGUIController {
 
 	@ApiResponses(value = {@ApiResponse(code = 200, message = "Success/Fail", response = RequestResult.class)})
 	@GetMapping(value = "/domainOperationCount")
-	public SuccessResponseEntity domainOperationCount(@RequestParam(required = false) String zkClusterKey) {
+	public SuccessResponseEntity domainOperationCount(@RequestParam(required = false) String zkClusterKey)
+			throws SaturnJobConsoleException {
 		Date today = new Date();
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(today);
 		calendar.add(Calendar.DATE, -30);
 		Date startDate = calendar.getTime();
-		Map<String, List> histories = dashboardService
-				.getDomainOperationHistory(DashboardServiceImpl.DashboardType.DOMAIN.name(),
-						DashboardServiceImpl.DashboardTopic.DOMAIN_OVERALL_COUNT.name(), startDate, today);
+
+		List<String> zkClusterList = getZkClusterListOrDefault(zkClusterKey);
+		Map<String, List> histories = dashboardService.getDomainOperationHistory(zkClusterList,
+				DashboardServiceImpl.DashboardType.DOMAIN.name(),
+				DashboardServiceImpl.DashboardTopic.DOMAIN_OVERALL_COUNT.name(), startDate, today);
 		return new SuccessResponseEntity(histories);
 	}
 
 	@ApiResponses(value = {@ApiResponse(code = 200, message = "Success/Fail", response = RequestResult.class)})
 	@GetMapping(value = "/domainCount")
-	public SuccessResponseEntity domainCount(@RequestParam(required = false) String zkClusterKey) {
+	public SuccessResponseEntity domainCount(@RequestParam(required = false) String zkClusterKey)
+			throws SaturnJobConsoleException {
 		Date today = new Date();
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(today);
 		calendar.add(Calendar.DATE, -30);
 		Date startDate = calendar.getTime();
-		Map<String, List> histories = dashboardService
-				.getDomainCountHistory(zkClusterKey, DashboardServiceImpl.DashboardType.DOMAIN.name(),
-						DashboardServiceImpl.DashboardTopic.DOMAIN_COUNT.name(), startDate, today);
+
+		List<String> zkClusterList = getZkClusterListOrDefault(zkClusterKey);
+		Map<String, List> histories = dashboardService.getDomainCountHistory(zkClusterList,
+				DashboardServiceImpl.DashboardType.DOMAIN.name(),
+				DashboardServiceImpl.DashboardTopic.DOMAIN_COUNT.name(), startDate, today);
 		return new SuccessResponseEntity(histories);
 	}
 
 	@ApiResponses(value = {@ApiResponse(code = 200, message = "Success/Fail", response = RequestResult.class)})
 	@GetMapping(value = "/executorCount")
-	public SuccessResponseEntity executorCount(@RequestParam(required = false) String zkClusterKey) {
+	public SuccessResponseEntity executorCount(@RequestParam(required = false) String zkClusterKey)
+			throws SaturnJobConsoleException {
 		Date today = new Date();
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(today);
 		calendar.add(Calendar.DATE, -30);
 		Date startDate = calendar.getTime();
-		Map<String, List> histories = dashboardService
-				.getExecutorHistory(zkClusterKey, DashboardServiceImpl.DashboardType.EXECUTOR.name(),
-						DashboardServiceImpl.DashboardTopic.EXECUTOR_COUNT.name(), startDate, today);
+
+		List<String> zkClusterList = getZkClusterListOrDefault(zkClusterKey);
+		Map<String, List> histories = dashboardService.getExecutorHistory(zkClusterList,
+				DashboardServiceImpl.DashboardType.EXECUTOR.name(),
+				DashboardServiceImpl.DashboardTopic.EXECUTOR_COUNT.name(), startDate, today);
 		return new SuccessResponseEntity(histories);
 	}
 
 	@ApiResponses(value = {@ApiResponse(code = 200, message = "Success/Fail", response = RequestResult.class)})
 	@GetMapping(value = "/jobCount")
-	public SuccessResponseEntity jobCount(@RequestParam(required = false) String zkClusterKey) {
+	public SuccessResponseEntity jobCount(@RequestParam(required = false) String zkClusterKey)
+			throws SaturnJobConsoleException {
 		Date today = new Date();
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(today);
 		calendar.add(Calendar.DATE, -30);
 		Date startDate = calendar.getTime();
-		Map<String, List> histories = dashboardService
-				.getJobCountHistory(zkClusterKey, DashboardServiceImpl.DashboardType.JOB.name(),
-						DashboardServiceImpl.DashboardTopic.JOB_COUNT.name(), startDate, today);
+
+		List<String> zkClusterList = getZkClusterListOrDefault(zkClusterKey);
+		Map<String, List> histories = dashboardService.getJobCountHistory(zkClusterList,
+				DashboardServiceImpl.DashboardType.JOB.name(),
+				DashboardServiceImpl.DashboardTopic.JOB_COUNT.name(), startDate, today);
 		return new SuccessResponseEntity(histories);
+	}
+
+	private List<String> getZkClusterListOrDefault(String zkClusterKey) throws SaturnJobConsoleException {
+
+		if (StringUtils.isNotBlank(zkClusterKey)) {
+			checkAndGetZkCluster(zkClusterKey);
+			return Collections.singletonList(zkClusterKey);
+
+		} else {
+			return getAvailableZkClusterKey();
+		}
+	}
+
+	private List<String> getAvailableZkClusterKey() {
+		List<String> zkClusters = new ArrayList<>();
+		Collection<ZkCluster> zkClusterList = registryCenterService.getOnlineZkClusterList();
+		Iterator<ZkCluster> iter = zkClusterList.iterator();
+		while (iter.hasNext()) {
+			ZkCluster tmpCluster = iter.next();
+			zkClusters.add(tmpCluster.getZkClusterKey());
+		}
+		return zkClusters;
 	}
 
 }
