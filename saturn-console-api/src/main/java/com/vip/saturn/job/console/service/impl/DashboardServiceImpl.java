@@ -604,20 +604,19 @@ public class DashboardServiceImpl implements DashboardService {
 	}
 
 	@Override
-	public Map<String, List> getDomainOperationHistory(String type, String topic, Date fromDate, Date toDate) {
+	public Map<String, List> getDomainOperationHistory(List<String> zkClusterList, String type, String topic,
+			Date fromDate, Date toDate) {
 		SimpleDateFormat sdf = new SimpleDateFormat("MM-dd");
 
-		List<String> zkClusters = getAvailableZkClusterKey();
-
-		if (zkClusters.isEmpty()) {
+		if (zkClusterList.isEmpty()) {
 			Map<String, List> result = new HashMap<>(2);
 			result.put("xAxis", null);
 			result.put("yAxis", null);
 			return result;
 		}
 
-		List<DashboardHistory> dashboardHistories = dashboardHistoryRepository
-				.selectByZkClustersAndTypeAndTopicAndFromStartDateToEndDate(zkClusters, type, topic, fromDate, toDate);
+		List<DashboardHistory> dashboardHistories = dashboardHistoryRepository.selectByZkClustersAndTypeAndTopicAndFromStartDateToEndDate(
+				zkClusterList, type, topic, fromDate, toDate);
 
 		Calendar tmpCalendar = Calendar.getInstance();
 		tmpCalendar.setTime(fromDate);
@@ -659,27 +658,19 @@ public class DashboardServiceImpl implements DashboardService {
 	}
 
 	@Override
-	public Map<String, List> getDomainCountHistory(String zkCluster, String type, String topic, Date fromDate,
+	public Map<String, List> getDomainCountHistory(List<String> zkClusterList, String type, String topic, Date fromDate,
 			Date toDate) {
 		SimpleDateFormat sdf = new SimpleDateFormat("MM-dd");
 
-		List<String> zkClusters = new ArrayList<>();
-
-		if (StringUtils.isEmpty(zkCluster)) {
-			zkClusters.addAll(getAvailableZkClusterKey());
-		} else {
-			zkClusters.add(zkCluster);
-		}
-
-		if (zkClusters.isEmpty()) {
+		if (zkClusterList.isEmpty()) {
 			Map<String, List> result = new HashMap<>(2);
 			result.put("xAxis", null);
 			result.put("yAxis", null);
 			return result;
 		}
 
-		List<DashboardHistory> dashboardHistories = dashboardHistoryRepository
-				.selectByZkClustersAndTypeAndTopicAndFromStartDateToEndDate(zkClusters, type, topic, fromDate, toDate);
+		List<DashboardHistory> dashboardHistories = dashboardHistoryRepository.selectByZkClustersAndTypeAndTopicAndFromStartDateToEndDate(
+				zkClusterList, type, topic, fromDate, toDate);
 
 		Calendar tmpCalendar = Calendar.getInstance();
 		tmpCalendar.setTime(fromDate);
@@ -720,28 +711,20 @@ public class DashboardServiceImpl implements DashboardService {
 	}
 
 	@Override
-	public Map<String, List> getExecutorHistory(String zkCluster, String type, String topic, Date fromDate,
+	public Map<String, List> getExecutorHistory(List<String> zkClusterList, String type, String topic, Date fromDate,
 			Date toDate) {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("MM-dd");
 
-		List<String> zkClusters = new ArrayList<>();
-
-		if (StringUtils.isEmpty(zkCluster)) {
-			zkClusters.addAll(getAvailableZkClusterKey());
-		} else {
-			zkClusters.add(zkCluster);
-		}
-
-		if (zkClusters.isEmpty()) {
+		if (zkClusterList.isEmpty()) {
 			Map<String, List> result = new HashMap<>(2);
 			result.put("xAxis", null);
 			result.put("yAxis", null);
 			return result;
 		}
 
-		List<DashboardHistory> dashboardHistories = dashboardHistoryRepository
-				.selectByZkClustersAndTypeAndTopicAndFromStartDateToEndDate(zkClusters, type, topic, fromDate, toDate);
+		List<DashboardHistory> dashboardHistories = dashboardHistoryRepository.selectByZkClustersAndTypeAndTopicAndFromStartDateToEndDate(
+				zkClusterList, type, topic, fromDate, toDate);
 
 		Calendar tmpCalendar = Calendar.getInstance();
 		tmpCalendar.setTime(fromDate);
@@ -797,27 +780,19 @@ public class DashboardServiceImpl implements DashboardService {
 	}
 
 	@Override
-	public Map<String, List> getJobCountHistory(String zkCluster, String type, String topic, Date fromDate,
+	public Map<String, List> getJobCountHistory(List<String> zkClusterList, String type, String topic, Date fromDate,
 			Date toDate) {
 		SimpleDateFormat sdf = new SimpleDateFormat("MM-dd");
 
-		List<String> zkClusters = new ArrayList<>();
-
-		if (StringUtils.isEmpty(zkCluster)) {
-			zkClusters.addAll(getAvailableZkClusterKey());
-		} else {
-			zkClusters.add(zkCluster);
-		}
-
-		if (zkClusters.isEmpty()) {
+		if (zkClusterList.isEmpty()) {
 			Map<String, List> result = new HashMap<>(2);
 			result.put("xAxis", null);
 			result.put("yAxis", null);
 			return result;
 		}
 
-		List<DashboardHistory> dashboardHistories = dashboardHistoryRepository
-				.selectByZkClustersAndTypeAndTopicAndFromStartDateToEndDate(zkClusters, type, topic, fromDate, toDate);
+		List<DashboardHistory> dashboardHistories = dashboardHistoryRepository.selectByZkClustersAndTypeAndTopicAndFromStartDateToEndDate(
+				zkClusterList, type, topic, fromDate, toDate);
 
 		Calendar tmpCalendar = Calendar.getInstance();
 		tmpCalendar.setTime(fromDate);
@@ -857,14 +832,4 @@ public class DashboardServiceImpl implements DashboardService {
 		return result;
 	}
 
-	private List<String> getAvailableZkClusterKey() {
-		List<String> zkClusters = new ArrayList<>();
-		Collection<ZkCluster> zkClusterList = registryCenterService.getOnlineZkClusterList();
-		Iterator<ZkCluster> iter = zkClusterList.iterator();
-		while (iter.hasNext()) {
-			ZkCluster tmpCluster = iter.next();
-			zkClusters.add(tmpCluster.getZkClusterKey());
-		}
-		return zkClusters;
-	}
 }

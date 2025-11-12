@@ -139,48 +139,50 @@ public interface DashboardService {
 
 	/**
 	 * 获取全域执行历史数据
+	 * @param zkClusterList
 	 * @param type
 	 * @param topic
 	 * @param fromDate
 	 * @param toDate
 	 * @return
 	 */
-	Map<String, List> getDomainOperationHistory(String type, String topic, Date fromDate, Date toDate);
+	Map<String, List> getDomainOperationHistory(List<String> zkClusterList, String type, String topic, Date fromDate,
+			Date toDate);
 
 	/**
 	 * 获取某个集群域历史个数
-	 * @param zkCluster
+	 * @param zkClusterList
 	 * @param type
 	 * @param topic
 	 * @param fromDate
 	 * @param toDate
 	 * @return
 	 */
-	Map<String, List> getDomainCountHistory(String zkCluster, String type, String topic, Date fromDate,
+	Map<String, List> getDomainCountHistory(List<String> zkClusterList, String type, String topic, Date fromDate,
 			Date toDate);
 
 	/**
 	 * 获取Executor历史个数
-	 * @param zkCluster
+	 * @param zkClusterList
 	 * @param type
 	 * @param topic
 	 * @param fromDate
 	 * @param toDate
 	 * @return
 	 */
-	Map<String, List> getExecutorHistory(String zkCluster, String type, String topic, Date fromDate,
+	Map<String, List> getExecutorHistory(List<String> zkClusterList, String type, String topic, Date fromDate,
 			Date toDate);
 
 	/**
 	 * 获取作业历史个数
-	 * @param zkCluster
+	 * @param zkClusterList
 	 * @param type
 	 * @param topic
 	 * @param fromDate
 	 * @param toDate
 	 * @return
 	 */
-	Map<String, List> getJobCountHistory(String zkCluster, String type, String topic, Date fromDate,
+	Map<String, List> getJobCountHistory(List<String> zkClusterList, String type, String topic, Date fromDate,
 			Date toDate);
 
 }
